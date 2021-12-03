@@ -41,8 +41,3 @@ docker-compose up -d rabbitmq
 ```
 ### Sentry
 https://develop.sentry.dev/self-hosted/
-
-
-# Instruções para a aplicação Rails
-
-- [Rails](rails/README.md)
