@@ -21,7 +21,7 @@ docker-compose run phoenix bash
 
 - **/products**  | POST |
 > The route **/products** is responsible for creating and adding the product to the database. In the body of the request you must have all the values of the product.
-> Values (None of the values can be empty or null). **The body of the request is a key with the name products and a json value containing the following information.**
+> Values (None of the values can be empty or null). **The body of the request is a key with the name product and a json value containing the following information.**
 > - sku | string |: This value is the product identifier. I chose to put it in string because the code pattern can vary from characters to numbers.
 > - name | string |: This value is the name of the product.
 > - description | string |: This value is the description of the product.
@@ -31,7 +31,7 @@ docker-compose run phoenix bash
 Example:
 ```
 {
-	"products": {
+	"product": {
 		"sku": "SKU",
 		"name": "Name",
 		"description": "Description",
