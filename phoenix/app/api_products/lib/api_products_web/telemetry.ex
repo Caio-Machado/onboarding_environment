@@ -24,13 +24,11 @@ defmodule ApiProductsWeb.Telemetry do
         tags: [:route],
         unit: {:native, :millisecond}
       ),
-
       summary("api_products.repo.query.total_time", unit: {:native, :millisecond}),
       summary("api_products.repo.query.decode_time", unit: {:native, :millisecond}),
       summary("api_products.repo.query.query_time", unit: {:native, :millisecond}),
       summary("api_products.repo.query.queue_time", unit: {:native, :millisecond}),
       summary("api_products.repo.query.idle_time", unit: {:native, :millisecond}),
-
       summary("vm.memory.total", unit: {:byte, :kilobyte}),
       summary("vm.total_run_queue_lengths.total"),
       summary("vm.total_run_queue_lengths.cpu"),
@@ -39,7 +37,6 @@ defmodule ApiProductsWeb.Telemetry do
   end
 
   defp periodic_measurements do
-    [
-    ]
+    []
   end
 end

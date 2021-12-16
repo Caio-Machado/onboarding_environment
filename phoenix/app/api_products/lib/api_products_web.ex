@@ -1,5 +1,4 @@
 defmodule ApiProductsWeb do
-
   def controller do
     quote do
       use Phoenix.Controller, namespace: ApiProductsWeb

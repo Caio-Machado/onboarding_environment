@@ -1,5 +1,6 @@
 defmodule ApiProductsWeb.ProductsView do
   use ApiProductsWeb, :view
+
   alias ApiProductsWeb.ProductsView
   alias ApiProductsWeb.ChangesetView
 
@@ -12,15 +13,13 @@ defmodule ApiProductsWeb.ProductsView do
   end
 
   def render("product.json", %{products: product}) do
-    %{id: product.id,
+    %{
+      id: product.id,
       sku: product.sku,
       name: product.name,
       description: product.description,
       amount: product.amount,
-      price: product.price}
-  end
-
-  def render("error.json", %{product: result}) do
-    render_one(result, ChangesetView, "error.json")
+      price: product.price
+    }
   end
 end

@@ -4,11 +4,11 @@ defmodule ApiProducts.Management.Products do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "products" do
-    field :sku, :string
-    field :name, :string
-    field :description, :string
-    field :amount, :integer
-    field :price, :float
+    field(:sku, :string)
+    field(:name, :string)
+    field(:description, :string)
+    field(:amount, :integer)
+    field(:price, :float)
   end
 
   def changeset(product, attrs) do

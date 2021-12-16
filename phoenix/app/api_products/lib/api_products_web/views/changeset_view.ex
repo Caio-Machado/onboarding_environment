@@ -6,6 +6,6 @@ defmodule ApiProductsWeb.ChangesetView do
   end
 
   def render("error.json", %{changeset: changeset}) do
-    %{errors: translate_errors(changeset)}
+    %{error: translate_errors(changeset)}
   end
 end

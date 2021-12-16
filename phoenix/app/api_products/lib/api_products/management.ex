@@ -1,14 +1,14 @@
 defmodule ApiProducts.Management do
   import Ecto.Query, warn: false
-  alias ApiProducts.Repo
 
+  alias ApiProducts.Repo
   alias ApiProducts.Management.Products
 
-  def list_myapp_development do
+  def list_products do
     Repo.all(Products)
   end
 
-  def get_product!(id), do: Repo.get(Products, id)
+  def get_product(id), do: Repo.get(Products, id)
 
   def create_product(attrs \\ %{}) do
     %Products{}
@@ -24,9 +24,5 @@ defmodule ApiProducts.Management do
 
   def delete_product(%Products{} = product) do
     Repo.delete(product)
-  end
-
-  def change_product(%Products{} = product, attrs \\ %{}) do
-    Products.changeset(product, attrs)
   end
 end
