@@ -2,7 +2,6 @@ defmodule ApiProductsWeb.ProductsView do
   use ApiProductsWeb, :view
 
   alias ApiProductsWeb.ProductsView
-  alias ApiProductsWeb.ChangesetView
 
   def render("index.json", %{products: products}) do
     %{products: render_many(products, ProductsView, "product.json")}

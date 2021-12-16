@@ -3,9 +3,9 @@ defmodule ApiProductsWeb.ProductsController do
 
   alias ApiProducts.Management
 
-  action_fallback ApiProductsWeb.FallbackController
+  action_fallback(ApiProductsWeb.FallbackController)
 
-  plug :product_exists? when action in [:show, :update, :delete]
+  plug(:fetch_product when action in [:show, :update, :delete])
 
   def index(conn, _params) do
     products = Management.list_products()
@@ -18,37 +18,40 @@ defmodule ApiProductsWeb.ProductsController do
         conn
         |> put_status(:created)
         |> render("show.json", product: result)
-      {:error, result} ->
-        {:error, result}
+
+      error -> error
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, _) do
     render(conn, "show.json", product: conn.assigns[:product])
   end
 
-  def update(conn, %{"id" => id, "product" => product_params}) do
-    case conn.params["id"] |> Management.get_product() |> Management.update_product(product_params) do
-      {:ok, _} -> json(conn, %{:ok => "The product with id #{conn.params["id"]} has updated!"})
-      {:error, result} -> {:error, result}
+  def update(conn, %{"id" => _, "product" => product_params}) do
+    case Management.update_product(conn.assigns[:product], product_params) do
+      {:ok, _} -> send_resp(conn, 204, "")
+      error -> error
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    case conn.params["id"] |> Management.get_product() |> Management.delete_product() do
-      {:ok, _} -> json(conn, %{:ok => "The product with id #{conn.params["id"]} has deleted!"})
-      {:error, result} -> {:error, result}
+  def delete(conn, _) do
+    case Management.delete_product(conn.assigns[:product]) do
+      {:ok, _} -> send_resp(conn, 204, "")
+      error -> error
     end
   end
 
-  defp product_exists?(conn, _) do
+  defp fetch_product(conn, _) do
     product = Management.get_product(conn.params["id"])
+
     case product do
       nil ->
         conn
         |> put_status(:not_found)
         |> put_view(ApiProductsWeb.ErrorView)
         |> render(:"404")
+        |> halt()
+
       %ApiProducts.Management.Products{} ->
         assign(conn, :product, product)
     end
