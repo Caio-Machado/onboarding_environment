@@ -1,8 +1,8 @@
-defmodule ApiProductsWeb.LogstashController do
+defmodule ApiProductsWeb.ElasticSearchHelper do
   import Tirexs.HTTP
 
   def save_log(response) do
-    post("/products/product/", format_response(response))
+    post("/products/requests/", format_response(response))
     response
   end
 
@@ -22,7 +22,8 @@ defmodule ApiProductsWeb.LogstashController do
       resp_cookies: response.resp_cookies,
       scheme: response.scheme,
       state: response.state,
-      status: response.status
+      status: response.status,
+      date: DateTime.to_iso8601(DateTime.utc_now())
     }
   end
 end
