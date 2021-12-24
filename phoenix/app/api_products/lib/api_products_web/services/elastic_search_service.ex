@@ -1,8 +1,8 @@
-defmodule ApiProductsWeb.ElasticSearchHelper do
+defmodule ApiProductsWeb.ElasticSearchService do
   import Tirexs.HTTP
 
   def save_log(response) do
-    post("/products/requests/", format_response(response))
+    post("/logs/requests/", format_response(response))
     response
   end
 

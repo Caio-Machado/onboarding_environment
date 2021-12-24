@@ -1,4 +1,4 @@
-defmodule ApiProductsWeb.RedisHelper do
+defmodule ApiProductsWeb.RedisService do
   def set_products(all_products) do
     Redix.command(:redis_server, ["SET", "products:index", encode(all_products)])
   end
