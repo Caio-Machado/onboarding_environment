@@ -1,4 +1,4 @@
-defmodule ApiProductsWeb.RedisService do
+defmodule ApiProducts.RedisService do
   def set_products(all_products) do
     Redix.command(:redis_server, ["SET", "products:index", encode(all_products)])
   end
@@ -14,11 +14,12 @@ defmodule ApiProductsWeb.RedisService do
   end
 
   def delete_products() do
-    case get_product() do
+    case get_products() do
       {:ok, _} -> Redix.command(:redis_server, ["DEL", "products:index"])
 
       error -> error
     end
+  end
 
   defp encode(product), do: product |> :erlang.term_to_binary() |> Base.encode16()
 

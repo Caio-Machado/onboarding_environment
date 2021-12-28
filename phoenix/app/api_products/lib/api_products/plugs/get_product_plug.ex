@@ -1,4 +1,4 @@
-defmodule ApiProductsWeb.GetProductPlug do
+defmodule ApiProducts.GetProductPlug do
   use ApiProductsWeb, :controller
   import Plug.Conn
 

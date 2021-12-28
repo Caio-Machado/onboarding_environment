@@ -1,7 +1,7 @@
 defmodule ApiProductsWeb.FallbackController do
   use ApiProductsWeb, :controller
 
-  plug(ApiProductsWeb.SaveLogPlug)
+  plug(ApiProducts.SaveLogPlug)
 
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn

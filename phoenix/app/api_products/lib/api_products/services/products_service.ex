@@ -1,9 +1,8 @@
-defmodule ApiProductsWeb.ProductsService do
-  # use ApiProductsWeb, :controller
+defmodule ApiProducts.ProductsService do
   require ApiProductsWeb
 
   alias ApiProducts.Management
-  alias ApiProductsWeb.RedisService
+  alias ApiProducts.RedisService
 
   def list() do
     case RedisService.get_products() do

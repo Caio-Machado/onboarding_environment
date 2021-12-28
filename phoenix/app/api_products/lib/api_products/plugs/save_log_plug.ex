@@ -1,4 +1,4 @@
-defmodule ApiProductsWeb.SaveLogPlug do
+defmodule ApiProducts.SaveLogPlug do
   import Plug.Conn
   import Tirexs.HTTP
 

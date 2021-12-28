@@ -1,15 +1,13 @@
 defmodule ApiProductsWeb.ProductsController do
   use ApiProductsWeb, :controller
 
-  alias ApiProducts.Management
-  alias ApiProductsWeb.RedisService
-  alias ApiProductsWeb.ProductsService
+  alias ApiProducts.ProductsService
 
   action_fallback(ApiProductsWeb.FallbackController)
 
-  plug(ApiProductsWeb.GetProductPlug when action in [:show, :update, :delete])
+  plug(ApiProducts.GetProductPlug when action in [:show, :update, :delete])
 
-  plug(ApiProductsWeb.SaveLogPlug)
+  plug(ApiProducts.SaveLogPlug)
 
   def index(conn, _) do
     with {:ok, response} <- ProductsService.list() do
