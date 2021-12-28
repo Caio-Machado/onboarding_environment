@@ -1,39 +1,63 @@
 defmodule ApiProductsWeb.ProductsService do
-  use ApiProductsWeb, :controller
+  # use ApiProductsWeb, :controller
+  require ApiProductsWeb
 
   alias ApiProducts.Management
   alias ApiProductsWeb.RedisService
-  alias ApiProductsWeb.ElasticSearchService
 
-  def confirm_index() do
-    case RedisService.set_products(Management.list_products()) do
-      {:ok, _} -> {:ok, result} = RedisService.get_products()
+  def list() do
+    case RedisService.get_products() do
+      {:ok, nil} ->
+        RedisService.set_products(Management.list_products())
+        RedisService.get_products()
+
+      {:ok, result} -> {:ok, result}
 
       {:error, _} -> {:ok, Management.list_products()}
     end
   end
 
-  def confirm_create(product_params) do
+  def create(product_params) do
     case Management.create_product(product_params) do
-      {:ok, result} -> {:ok, result}
+      {:ok, result} ->
+        RedisService.delete_products()
+        {:ok, result}
 
       error -> error
     end
   end
 
-  def confirm_update(product, product_params) do
-    case Management.update_product(product, product_params) do
-      {:ok, _} -> {:ok}
+  def show(product) do
+    case product do
+      nil -> {:error, :not_found}
 
-      error -> error
+      %ApiProducts.Management.Products{} -> {:ok, product}
     end
   end
 
-  def confirm_delete(product) do
-    case Management.delete_product(product) do
-      {:ok, _} -> {:ok}
+  def update(product, product_params) do
+    case product do
+      nil -> {:error, :not_found}
 
-      error -> error
+      %ApiProducts.Management.Products{} ->
+        case Management.update_product(product, product_params) do
+          {:ok, _} -> RedisService.delete_products()
+
+          error -> error
+        end
+    end
+  end
+
+  def delete(product) do
+    case product do
+      nil -> {:error, :not_found}
+
+      %ApiProducts.Management.Products{} ->
+        case Management.delete_product(product) do
+          {:ok, _} -> RedisService.delete_products()
+
+          error -> error
+        end
     end
   end
 end

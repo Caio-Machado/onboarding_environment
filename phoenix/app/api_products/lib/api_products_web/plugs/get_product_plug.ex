@@ -3,7 +3,6 @@ defmodule ApiProductsWeb.GetProductPlug do
   import Plug.Conn
 
   alias ApiProducts.Management
-  alias ApiProductsWeb.ElasticSearchService
 
   def init(props) do
     props
@@ -17,9 +16,6 @@ defmodule ApiProductsWeb.GetProductPlug do
         conn
         |> put_status(:not_found)
         |> put_view(ApiProductsWeb.ErrorView)
-        |> render(:"404")
-        |> halt()
-        |> ElasticSearchService.save_log()
 
       %ApiProducts.Management.Products{} ->
         assign(conn, :product, product)

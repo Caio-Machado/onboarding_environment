@@ -1,9 +1,16 @@
-defmodule ApiProductsWeb.ElasticSearchService do
+defmodule ApiProductsWeb.SaveLogPlug do
+  import Plug.Conn
   import Tirexs.HTTP
 
-  def save_log(response) do
-    post("/logs/requests/", format_response(response))
-    response
+  def init(props) do
+    props
+  end
+
+  def call(conn, _) do
+    register_before_send(conn, fn conn ->
+      post("/logs/requests/", format_response(conn))
+      conn
+    end)
   end
 
   defp format_response(response) do
@@ -16,9 +23,9 @@ defmodule ApiProductsWeb.ElasticSearchService do
       port: response.port,
       query_params: response.query_params,
       query_string: response.query_string,
+      body_params: response.body_params,
       req_cookies: response.req_cookies,
       request_path: response.request_path,
-      resp_body: response.resp_body,
       resp_cookies: response.resp_cookies,
       scheme: response.scheme,
       state: response.state,
