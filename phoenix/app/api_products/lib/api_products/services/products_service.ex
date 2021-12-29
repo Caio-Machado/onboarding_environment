@@ -17,46 +17,35 @@ defmodule ApiProducts.ProductsService do
   end
 
   def create(product_params) do
-    case Management.create_product(product_params) do
-      {:ok, result} ->
-        RedisService.delete_products()
-        {:ok, result}
-
-      error -> error
-    end
+    product_params
+    |> Management.create_product
+    |> delete_redis_key()
   end
 
-  def show(product) do
-    case product do
-      nil -> {:error, :not_found}
+  def show(nil), do: {:error, :not_found}
 
-      %ApiProducts.Management.Products{} -> {:ok, product}
-    end
+  def show(%ApiProducts.Management.Products{} = product), do: {:ok, product}
+
+  def update(nil, _), do: {:error, :not_found}
+
+  def update(%ApiProducts.Management.Products{} = product, product_params) do
+    product
+    |> Management.update_product(product_params)
+    |> delete_redis_key()
   end
 
-  def update(product, product_params) do
-    case product do
-      nil -> {:error, :not_found}
+  def delete(nil), do: {:error, :not_found}
 
-      %ApiProducts.Management.Products{} ->
-        case Management.update_product(product, product_params) do
-          {:ok, _} -> RedisService.delete_products()
-
-          error -> error
-        end
-    end
+  def delete(%ApiProducts.Management.Products{} = product) do
+    product
+    |> Management.delete_product()
+    |> delete_redis_key()
   end
 
-  def delete(product) do
-    case product do
-      nil -> {:error, :not_found}
-
-      %ApiProducts.Management.Products{} ->
-        case Management.delete_product(product) do
-          {:ok, _} -> RedisService.delete_products()
-
-          error -> error
-        end
-    end
+  defp delete_redis_key({:ok, result}) do
+    RedisService.delete_products()
+    {:ok, result}
   end
+
+  defp delete_redis_key({:error, error}), do: {:error, error}
 end
