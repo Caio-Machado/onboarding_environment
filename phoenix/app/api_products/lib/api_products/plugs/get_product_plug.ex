@@ -9,16 +9,22 @@ defmodule ApiProducts.GetProductPlug do
   end
 
   def call(conn, _) do
-    product = Management.get_product(conn.params["id"])
+    conn.params["id"]
+    |> Management.get_product()
+    |> verify_product(conn)
+  end
 
-    case product do
-      nil ->
-        conn
-        |> put_status(:not_found)
-        |> put_view(ApiProductsWeb.ErrorView)
+  defp verify_product(%ApiProducts.Management.Products{} = product, conn), do: assign(conn, :product, product)
 
-      %ApiProducts.Management.Products{} ->
-        assign(conn, :product, product)
-    end
+  defp verify_product(nil, conn) do
+    conn
+    |> put_status(404)
+    |> put_view(ApiProductsWeb.ErrorView)
+  end
+
+  defp verify_product(_, conn) do
+    conn
+    |> put_status(500)
+    |> put_view(ApiProductsWeb.ErrorView)
   end
 end

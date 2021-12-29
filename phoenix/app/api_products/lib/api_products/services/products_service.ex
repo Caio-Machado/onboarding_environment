@@ -47,5 +47,5 @@ defmodule ApiProducts.ProductsService do
     {:ok, result}
   end
 
-  defp delete_redis_key({:error, error}), do: {:error, error}
+  defp delete_redis_key(result), do: result
 end
