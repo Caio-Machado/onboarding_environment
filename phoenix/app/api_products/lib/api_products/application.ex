@@ -6,7 +6,8 @@ defmodule ApiProducts.Application do
       ApiProducts.Repo,
       ApiProductsWeb.Telemetry,
       {Phoenix.PubSub, name: ApiProducts.PubSub},
-      ApiProductsWeb.Endpoint
+      ApiProductsWeb.Endpoint,
+      {Redix, {"redis://localhost:6379", [name: :redis_server]}}
     ]
 
     opts = [strategy: :one_for_one, name: ApiProducts.Supervisor]

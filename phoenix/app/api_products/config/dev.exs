@@ -19,3 +19,5 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 config :phoenix, :plug_init_mode, :runtime
+
+config :tirexs, :uri, "http://127.0.0.1:9200"

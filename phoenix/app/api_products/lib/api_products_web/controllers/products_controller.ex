@@ -1,59 +1,44 @@
 defmodule ApiProductsWeb.ProductsController do
   use ApiProductsWeb, :controller
 
-  alias ApiProducts.Management
+  alias ApiProducts.ProductsService
 
   action_fallback(ApiProductsWeb.FallbackController)
 
-  plug(:fetch_product when action in [:show, :update, :delete])
+  plug(ApiProducts.GetProductPlug when action in [:show, :update, :delete])
 
-  def index(conn, _params) do
-    products = Management.list_products()
-    render(conn, "index.json", products: products)
+  plug(ApiProducts.SaveLogPlug)
+
+  def index(conn, _) do
+    with {:ok, response} <- ProductsService.list() do
+      conn
+      |> render("index.json", products: response)
+    end
   end
 
   def create(conn, %{"product" => product_params}) do
-    case Management.create_product(product_params) do
-      {:ok, result} ->
-        conn
-        |> put_status(:created)
-        |> render("show.json", product: result)
-
-      error -> error
+    with {:ok, response} <- ProductsService.create(product_params) do
+      conn
+      |> put_status(:created)
+      |> render("show.json", product: response)
     end
   end
 
   def show(conn, _) do
-    render(conn, "show.json", product: conn.assigns[:product])
+    with {:ok, product} <- ProductsService.show(conn.assigns[:product]) do
+      render(conn, "show.json", product: product)
+    end
   end
 
   def update(conn, %{"id" => _, "product" => product_params}) do
-    case Management.update_product(conn.assigns[:product], product_params) do
-      {:ok, _} -> send_resp(conn, 204, "")
-      error -> error
+    with {:ok, _} <- ProductsService.update(conn.assigns[:product], product_params) do
+      send_resp(conn, 204, "")
     end
   end
 
   def delete(conn, _) do
-    case Management.delete_product(conn.assigns[:product]) do
-      {:ok, _} -> send_resp(conn, 204, "")
-      error -> error
-    end
-  end
-
-  defp fetch_product(conn, _) do
-    product = Management.get_product(conn.params["id"])
-
-    case product do
-      nil ->
-        conn
-        |> put_status(:not_found)
-        |> put_view(ApiProductsWeb.ErrorView)
-        |> render(:"404")
-        |> halt()
-
-      %ApiProducts.Management.Products{} ->
-        assign(conn, :product, product)
+    with {:ok, _} <- ProductsService.delete(conn.assigns[:product]) do
+      send_resp(conn, 204, "")
     end
   end
 end

@@ -17,7 +17,7 @@ defmodule ApiProducts.MixProject do
   def application do
     [
       mod: {ApiProducts.Application, []},
-      extra_applications: [:logger, :runtime_tools, :mongodb_ecto]
+      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :tirexs]
     ]
   end
 
@@ -34,7 +34,9 @@ defmodule ApiProducts.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:mongodb_ecto, github: "michalmuskala/mongodb_ecto"}
+      {:mongodb_ecto, github: "michalmuskala/mongodb_ecto"},
+      {:redix, "~> 1.1"},
+      {:tirexs, "~> 0.8"}
     ]
   end
 
