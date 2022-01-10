@@ -10,9 +10,8 @@ defmodule ApiProductsWeb.ProductsController do
   plug(ApiProducts.SaveLogPlug)
 
   def index(conn, _) do
-    with {:ok, response} <- ProductsService.list() do
-      conn
-      |> render("index.json", products: response)
+    with {:ok, response} <- ProductsService.list(conn.params) do
+      render(conn, "index.json", products: response)
     end
   end
 

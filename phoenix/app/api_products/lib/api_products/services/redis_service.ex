@@ -1,10 +1,10 @@
 defmodule ApiProducts.RedisService do
-  def set_products(all_products) do
-    Redix.command(:redis_server, ["SET", "products:index", encode(all_products)])
+  def set_product(product) do
+    Redix.command(:redis_server, ["SET", "product:#{product.id}", encode(product)])
   end
 
-  def get_products() do
-    case Redix.command(:redis_server, ["GET", "products:index"]) do
+  def get_product(id) do
+    case Redix.command(:redis_server, ["GET", "product:#{id}"]) do
       {:ok, nil} -> {:ok, nil}
 
       {:ok, result} -> {:ok, decode(result)}
@@ -13,9 +13,9 @@ defmodule ApiProducts.RedisService do
     end
   end
 
-  def delete_products() do
-    case get_products() do
-      {:ok, _} -> Redix.command(:redis_server, ["DEL", "products:index"])
+  def delete_product(id) do
+    case get_product(id) do
+      {:ok, _} -> Redix.command(:redis_server, ["DEL", "product:#{id}"])
 
       error -> error
     end
