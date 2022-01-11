@@ -9,17 +9,18 @@ defmodule ApiProducts.ElasticService do
     delete("products/product/#{product_id}")
   end
 
+  def filter_search(%{} = params) when params == %{}, do: {:ok, nil}
 
-  def filter_search(params) do
-    case Enum.empty?(params) do
-      false ->
-        string_params = Enum.map_join(verify_params(params), "%20AND%20", fn({k, v}) -> "#{k}:#{v}" end)
-        verify_result(get("products/product/_search?q=" <> string_params))
-
-      _true -> params
-    end
+  def filter_search(%{} = params) do
+    params
+    |> verify_params()
+    |> Enum.map_join("%20AND%20", fn({k, v}) -> "#{k}:#{v}" end)
+    |> join_param()
+    |> get()
+    |> verify_result()
   end
 
+  defp join_param(string_params), do: "products/product/_search?q=#{string_params}"
 
   defp verify_params(params) do
     params
@@ -27,26 +28,31 @@ defmodule ApiProducts.ElasticService do
     |> modify_param(params["c_price"], {"price", "c_price"})
   end
 
-
   defp modify_param(params, "gt", {param, c_param}) do
-    {_, result} = Map.pop(params, c_param)
-    Map.put(result, param, "%3E#{Map.get(result, param)}")
+    if params[param] != nil do
+      {_, result} = Map.pop(params, c_param)
+      Map.put(result, param, "%3E#{Map.get(result, param)}")
+    else
+      params
+    end
   end
 
   defp modify_param(params, "lt", {param, c_param}) do
-    {_, result} = Map.pop(params, c_param)
-    Map.put(result, param, "%3C#{Map.get(result, param)}")
+    if params[param] != nil do
+      {_, result} = Map.pop(params, c_param)
+      Map.put(result, param, "%3C#{Map.get(result, param)}")
+    else
+      params
+    end
   end
 
   defp modify_param(params, _, _), do: params
-
 
   defp verify_result({:ok, 200, result}), do: format_result(result[:hits][:hits])
 
   defp verify_result(:error), do: {:error, :internal_server_error}
 
   defp verify_result(result), do: result
-
 
   defp format_result(result) do
     {:ok, Enum.map(result, fn(p) -> Map.delete(p[:_source], :last_update) end)}

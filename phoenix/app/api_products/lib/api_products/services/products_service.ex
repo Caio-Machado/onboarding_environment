@@ -6,23 +6,22 @@ defmodule ApiProducts.ProductsService do
   alias ApiProducts.ElasticService
 
   def list(params) do
-    with %{} <- ElasticService.filter_search(params) do
+    with {:ok, nil} <- ElasticService.filter_search(params) do
       {:ok, Management.list_products()}
     end
   end
 
   def create(product_params) do
     with {:ok, product} <- Management.create_product(product_params) do
+      RedisService.set_product(product)
       ElasticService.add_product(product)
       {:ok, product}
     end
   end
 
-
   def show(nil), do: {:error, :not_found}
 
   def show(%ApiProducts.Management.Products{} = product), do: {:ok, product}
-
 
   def update(nil, _), do: {:error, :not_found}
 
@@ -33,7 +32,6 @@ defmodule ApiProducts.ProductsService do
       {:ok, result}
     end
   end
-
 
   def delete(nil), do: {:error, :not_found}
 
