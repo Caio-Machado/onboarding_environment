@@ -3,23 +3,20 @@ defmodule ApiProducts.ProductsService do
 
   alias ApiProducts.Management
   alias ApiProducts.RedisService
+  alias ApiProducts.ElasticService
 
-  def list() do
-    case RedisService.get_products() do
-      {:ok, nil} ->
-        RedisService.set_products(Management.list_products())
-        RedisService.get_products()
-
-      {:ok, result} -> {:ok, result}
-
-      {:error, _} -> {:ok, Management.list_products()}
+  def list(params) do
+    with {:ok, nil} <- ElasticService.filter_search(params) do
+      {:ok, Management.list_products()}
     end
   end
 
   def create(product_params) do
-    product_params
-    |> Management.create_product
-    |> delete_redis_key()
+    with {:ok, product} <- Management.create_product(product_params) do
+      RedisService.set_product(product)
+      ElasticService.add_product(product)
+      {:ok, product}
+    end
   end
 
   def show(nil), do: {:error, :not_found}
@@ -29,23 +26,20 @@ defmodule ApiProducts.ProductsService do
   def update(nil, _), do: {:error, :not_found}
 
   def update(%ApiProducts.Management.Products{} = product, product_params) do
-    product
-    |> Management.update_product(product_params)
-    |> delete_redis_key()
+    with {:ok, result} <- Management.update_product(product, product_params) do
+      RedisService.set_product(result)
+      ElasticService.add_product(result)
+      {:ok, result}
+    end
   end
 
   def delete(nil), do: {:error, :not_found}
 
   def delete(%ApiProducts.Management.Products{} = product) do
-    product
-    |> Management.delete_product()
-    |> delete_redis_key()
+    with {:ok, result} <- Management.delete_product(product) do
+      RedisService.delete_product(product.id)
+      ElasticService.delete_product(product.id)
+      {:ok, result}
+    end
   end
-
-  defp delete_redis_key({:ok, result}) do
-    RedisService.delete_products()
-    {:ok, result}
-  end
-
-  defp delete_redis_key(result), do: result
 end
