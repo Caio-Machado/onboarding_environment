@@ -24,29 +24,23 @@ defmodule ApiProducts.ElasticService do
 
   defp verify_params(params) do
     params
-    |> modify_param(params["c_amount"], {"amount", "c_amount"})
-    |> modify_param(params["c_price"], {"price", "c_price"})
+    |> modify_param(params["amount"], params["c_amount"], {"amount", "c_amount"})
+    |> modify_param(params["price"], params["c_price"], {"price", "c_price"})
   end
 
-  defp modify_param(params, "gt", {param, c_param}) do
-    if params[param] != nil do
-      {_, result} = Map.pop(params, c_param)
-      Map.put(result, param, "%3E#{Map.get(result, param)}")
-    else
-      params
-    end
+  defp modify_param(params, base_param, _, _) when base_param == nil, do: params
+
+  defp modify_param(params, base_param, "gt", {param, c_param}) do
+    {_, result} = Map.pop(params, c_param)
+    Map.put(result, param, "%3E#{base_param}")
   end
 
-  defp modify_param(params, "lt", {param, c_param}) do
-    if params[param] != nil do
-      {_, result} = Map.pop(params, c_param)
-      Map.put(result, param, "%3C#{Map.get(result, param)}")
-    else
-      params
-    end
+  defp modify_param(params, base_param, "lt", {param, c_param}) do
+    {_, result} = Map.pop(params, c_param)
+    Map.put(result, param, "%3C#{base_param}")
   end
 
-  defp modify_param(params, _, _), do: params
+  defp modify_param(params, _, _, _), do: params
 
   defp verify_result({:ok, 200, result}), do: format_result(result[:hits][:hits])
 
