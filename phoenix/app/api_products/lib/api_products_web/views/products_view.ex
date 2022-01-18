@@ -18,7 +18,8 @@ defmodule ApiProductsWeb.ProductsView do
       name: product.name,
       description: product.description,
       amount: product.amount,
-      price: product.price
+      price: product.price,
+      bar_code: product.bar_code
     }
   end
 end

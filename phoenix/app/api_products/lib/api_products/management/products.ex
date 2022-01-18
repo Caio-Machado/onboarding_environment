@@ -9,11 +9,12 @@ defmodule ApiProducts.Management.Products do
     field(:description, :string)
     field(:amount, :integer)
     field(:price, :float)
+    field(:bar_code, :string)
   end
 
   def changeset(product, attrs) do
     product
-    |> cast(attrs, [:sku, :name, :description, :amount, :price])
-    |> validate_required([:sku, :name, :description, :amount, :price])
+    |> cast(attrs, [:sku, :name, :description, :amount, :price, :bar_code])
+    |> validate_required([:sku, :name, :description, :amount, :price, :bar_code])
   end
 end

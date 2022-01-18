@@ -44,9 +44,12 @@ defmodule ApiProducts.ElasticService do
 
   defp verify_result({:ok, 200, result}), do: format_result(result[:hits][:hits])
 
-  defp verify_result(:error), do: {:error, :internal_server_error}
+  defp verify_result({:error, 400, error}) do
+    cause = List.first(error.error.root_cause)
+    {:error, :bad_request, cause.reason}
+  end
 
-  defp verify_result(result), do: result
+  defp verify_result(_result), do: {:error, :internal_server_error}
 
   defp format_result(result) do
     {:ok, Enum.map(result, fn(p) -> Map.delete(p[:_source], :last_update) end)}
@@ -60,6 +63,7 @@ defmodule ApiProducts.ElasticService do
       description: product.description,
       amount: product.amount,
       price: product.price,
+      bar_code: product.bar_code,
       last_update: DateTime.to_iso8601(DateTime.utc_now())
     }
   end
