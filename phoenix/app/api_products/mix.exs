@@ -36,7 +36,8 @@ defmodule ApiProducts.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:mongodb_ecto, github: "michalmuskala/mongodb_ecto"},
       {:redix, "~> 1.1"},
-      {:tirexs, "~> 0.8"}
+      {:tirexs, "~> 0.8"},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 
