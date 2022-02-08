@@ -1,34 +1,93 @@
 defmodule ApiProducts.ProductsServiceTest do
   use ApiProducts.DataCase
 
+  import Mock
+
   alias ApiProducts.ProductsService
+  alias ApiProducts.ElasticService
+  alias ApiProducts.RedisService
 
-  @list_valid %{"name" => "produto", "amount" => 10, "c_amount" => "gt"}
-  @create_invalid_params %{"sku" => "Sku_Teste-1", "name" => "Nome-teste", "description" => "Descrição Teste 1", "amount" => 1, "price" => 0, "bar_code" => "12345"}
-  @create_valid_params %{"sku" => "Sku-Teste-1", "name" => "Nome teste", "description" => "Descrição Teste 1", "amount" => 1, "price" => 9, "bar_code" => "123356789"}
-  @create_blank_params %{"sku" => "Sku-Teste-1", "name" => "", "description" => "   ", "amount" => 1, "price" => 9, "bar_code" => "123356789"}
-
-  test "list/1 with the valid parameters" do
-    assert {:ok, []} = ProductsService.list(@list_valid)
+  setup_all do
+    list_valid = %{"name" => "Nome-teste"}
+    new_valid_params = %{"name" => "produto-atualizado", "amount" => 10, "price" => 19}
+    [new_valid_params: new_valid_params, list_valid: list_valid]
   end
 
-  test "create/1 with invalid sku, price and bar_code paramters" do
-    assert {:error, :bad_request, _menssage} = ProductsService.create(@create_invalid_params)
+  setup do
+    {:ok, product} = ProductsService.create(%{id: "11aaaa1111111a111111aa11", sku: "valid", name: "Nome-teste", description: "Descrição Teste", amount: 100, price: 99.5, barcode: "030105092"})
+    [product: product]
   end
 
-  test "create/1 with valid paramters" do
-    assert {:ok, %{}} = ProductsService.create(@create_valid_params)
+  describe "list/1" do
+    test "With valid parameters and without filters", %{product: product} do
+      assert {:ok, [product]} == ProductsService.list(%{})
+    end
+
+    test "with filters", %{product: product, list_valid: list_valid} do
+      with_mock(ElasticService, [:passthrough], [get: fn(_params) -> {:ok, 200, %{}} end]) do
+        assert {:ok, [product]} == ProductsService.list(list_valid)
+      end
+    end
+
+    test "With invalid filters", %{product: product} do
+      assert {:error, :bad_request, "For input string: \"invalid\""} == ProductsService.list(%{"amount" => "invalid"})
+    end
+
+    test "Without index" do
+      ElasticService.delete_all()
+      assert {:error, :internal_server_error} == ElasticService.filter_search(%{"amount" => 5})
+    end
   end
 
-  test "create/1 with name, description parameters blank" do
-    assert {:error, _error} = ProductsService.create(@create_blank_params)
+  describe "update/2" do
+    test "With nonexistent product id" do
+      assert ProductsService.update(nil, "idinvalido123") == {:error, :not_found}
+    end
+
+    test "With an existing product", %{new_valid_params: new_valid_params, product: product} do
+      with_mocks([
+        {ElasticService,
+         [],
+         [add_product: fn(_product) -> {:ok, 201, %{}} end]},
+        {RedisService,
+         [],
+         set_product: fn(_product) -> {:ok, "OK"} end}
+      ]) do
+        {:ok, result} = ProductsService.update(product, new_valid_params)
+
+        assert called(ElasticService.add_product(result))
+        assert called(RedisService.set_product(result))
+
+        assert result.name == new_valid_params["name"]
+        assert result.price == new_valid_params["price"]
+        assert result.amount == new_valid_params["amount"]
+      end
+    end
   end
 
-  test "update/2 with nonexistent product id" do
-    assert ProductsService.update(nil, "idinvalido123") == {:error, :not_found}
-  end
+  # describe "delete/2" do
+  #   test "With nonexistent product id", %{product: product} do
+  #     assert ProductsService.delete(nil) == {:error, :not_found}
+  #   end
 
-  test "delete/2 with nonexistent product id" do
-    assert ProductsService.delete(nil) == {:error, :not_found}
-  end
+  #   test "With an existing product" do
+  #     with_mocks([
+  #       {ElasticService,
+  #        [],
+  #        [delete_product: fn(_product) -> {:ok, 201, %{}} end]},
+  #       {RedisService,
+  #        [],
+  #        delete_product: fn(_product) -> {:ok, "OK"} end}
+  #     ]) do
+  #       ProductsService.delete(product)
+
+  #       assert called(ElasticService.add_product(product))
+  #       assert called(RedisService.set_product(product))
+
+  #       ProductsService.show(product)
+
+  #       assert ProductsService.get_product(product) == {:ok, 404, _}
+  #     end
+  #   end
+  # end
 end

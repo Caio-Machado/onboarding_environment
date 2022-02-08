@@ -9,3 +9,8 @@ config :api_products, ApiProductsWeb.Endpoint,
   server: false
 
 config :logger, level: :warn
+config :api_products, redis_server: 1
+config :api_products, :elsc_prod, link: "testproducts/"
+config :api_products, :elsc_prod, index: "product/"
+config :api_products, :elsc_logs, link: "testlogs/"
+config :api_products, :elsc_logs, index: "requests/"

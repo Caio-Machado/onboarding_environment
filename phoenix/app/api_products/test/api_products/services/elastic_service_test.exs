@@ -1,53 +1,56 @@
 defmodule ApiProducts.ElasticServiceTest do
   use ApiProducts.DataCase
 
-  import Mock
-
   alias ApiProducts.ElasticService
   alias ApiProducts.Management
 
-  @filter_search_valid %{"name" => "product", "amount" => 10, "c_amount" => "lt"}
-  @filter_search_invalid %{"name" => "product", "amount" => ""}
-  @valid_attrs %{"sku" => "invalid", "name" => "Nome teste", "description" => "Descrição Teste", "amount" => 100, "price" => 99.5, "bar_code" => "030105092"}
-
-  def create_product_test() do
-    {:ok, product} = Management.create_product(@valid_attrs)
-    product
+  setup_all do
+    valid_filters = %{"name" => "Nome-teste"}
+    [valid_filters: valid_filters]
   end
 
-  test "add_product/1 with valid product" do
-    with_mock ElasticService, [add_product: fn(_product) -> {:ok, 201, %{}} end] do
-      assert {:ok, 201, _} = ElasticService.add_product(create_product_test())
+  setup do
+    ElasticService.add_product(%{id: "11aaaa1111111a111111aa11", sku: "valid", name: "Nome-teste", description: "Descrição Teste", amount: 100, price: 99.5, barcode: "030105092"})
+    {:ok, 200, product} = ElasticService.get_product("11aaaa1111111a111111aa11")
+    [product: product[:_source]]
+  end
+
+  describe "add_product/1" do
+    test "With valid product", %{product: product} do
+      {:ok, 200, result} = ElasticService.get_product(product.id)
+      assert product.id == result[:_source][:id]
     end
   end
 
-  test "add_product/1 with valid product for update a product" do
-    with_mock ElasticService, [add_product: fn(_product) -> {:ok, 200, %{}} end] do
-      assert {:ok, 200, _} = ElasticService.add_product(create_product_test())
+  describe "get_product/1" do
+    test "With valid id", %{product: product} do
+      {:ok, 200, result} = ElasticService.get_product(product.id)
+      assert product.id == result[:_source][:id]
+    end
+
+    test "With invalid id", %{product: product} do
+      {:error, 404, %{}} = ElasticService.get_product("00aaaa0000000a000000aa00")
     end
   end
 
-  test "delete_product/1 with valid id" do
-    with_mock ElasticService, [delete_product: fn(_product) -> {:ok, 200, %{}} end] do
-      assert {:ok, 200, _} = ElasticService.delete_product(create_product_test().id)
+  describe "delete_product/1" do
+    test "With valid id", %{product: product} do
+      ElasticService.delete_product(product.id)
+      assert {:error, 404, %{}} = ElasticService.get_product(product.id)
+    end
+
+    test "With invalid id", %{product: product} do
+      assert {:error, 404, %{}} = ElasticService.delete_product("00aaaa0000000a000000aa00")
     end
   end
 
-  test "delete_product/1 with invalid id" do
-    with_mock ElasticService, [delete_product: fn(_product) -> {:error, 404, %{}} end] do
-      assert {:error, 404, _} = ElasticService.delete_product("InvalidID")
+  describe "filter_search/1" do
+    test "With empty parameters", %{product: product} do
+      assert {:ok, nil} == ElasticService.filter_search(%{})
     end
-  end
 
-  test "filter_search/1 with empty parameters" do
-    assert {:ok, nil} = ElasticService.filter_search(%{})
-  end
-
-  test "filter_search/1 with valid parameters" do
-    assert {:ok, result} = ElasticService.filter_search(@filter_search_valid)
-  end
-
-  test "filter_search/1 with invalid parameters" do
-    assert {:error, :bad_request, menssage} = ElasticService.filter_search(@filter_search_invalid)
+    test "With valid parameters", %{valid_filters: valid_filters} do
+      ElasticService.filter_search(valid_filters)
+    end
   end
 end

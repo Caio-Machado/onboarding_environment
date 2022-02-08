@@ -14,7 +14,11 @@ defmodule ApiProducts.DataCase do
   end
 
   setup tags do
-    ApiProducts.Repo.delete_all(ApiProducts.Management.Products)
+    on_exit(fn() ->
+      ApiProducts.Repo.delete_all(ApiProducts.Management.Products)
+      ApiProducts.ElasticService.delete_all()
+      ApiProducts.RedisService.delete_all()
+    end)
     :ok
   end
 
