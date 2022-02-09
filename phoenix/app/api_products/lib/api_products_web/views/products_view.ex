@@ -19,7 +19,7 @@ defmodule ApiProductsWeb.ProductsView do
       description: product.description,
       amount: product.amount,
       price: product.price,
-      bar_code: product.bar_code
+      barcode: product.barcode
     }
   end
 end

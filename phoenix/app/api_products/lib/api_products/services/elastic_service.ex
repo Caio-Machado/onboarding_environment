@@ -2,11 +2,19 @@ defmodule ApiProducts.ElasticService do
   import Tirexs.HTTP
 
   def add_product(product) do
-    put("products/product/#{product.id}", format_json(product))
+    put("#{get_link()}#{get_index()}#{product.id}", format_json(product))
+  end
+
+  def get_product(product_id) do
+    get("#{get_link()}#{get_index()}#{product_id}")
   end
 
   def delete_product(product_id) do
-    delete("products/product/#{product_id}")
+    delete("#{get_link()}#{get_index()}#{product_id}")
+  end
+
+  def delete_all() do
+    delete("#{get_link()}")
   end
 
   def filter_search(%{} = params) when params == %{}, do: {:ok, nil}
@@ -14,13 +22,13 @@ defmodule ApiProducts.ElasticService do
   def filter_search(%{} = params) do
     params
     |> verify_params()
-    |> Enum.map_join("%20AND%20", fn({k, v}) -> "#{k}:#{v}" end)
+    |> Enum.map_join("%20AND%20", fn {k, v} -> "#{k}:#{v}" end)
     |> join_param()
     |> get()
     |> verify_result()
   end
 
-  defp join_param(string_params), do: "products/product/_search?q=#{string_params}"
+  defp join_param(string_params), do: "#{get_link()}#{get_index()}_search?q=#{string_params}"
 
   defp verify_params(params) do
     params
@@ -52,7 +60,7 @@ defmodule ApiProducts.ElasticService do
   defp verify_result(_result), do: {:error, :internal_server_error}
 
   defp format_result(result) do
-    {:ok, Enum.map(result, fn(p) -> Map.delete(p[:_source], :last_update) end)}
+    {:ok, Enum.map(result, fn p -> Map.delete(p[:_source], :last_update) end)}
   end
 
   defp format_json(product) do
@@ -63,8 +71,16 @@ defmodule ApiProducts.ElasticService do
       description: product.description,
       amount: product.amount,
       price: product.price,
-      bar_code: product.bar_code,
+      barcode: product.barcode,
       last_update: DateTime.to_iso8601(DateTime.utc_now())
     }
+  end
+
+  defp get_link() do
+    Application.get_env(:api_products, :elsc_prod)[:link]
+  end
+
+  defp get_index() do
+    Application.get_env(:api_products, :elsc_prod)[:index]
   end
 end

@@ -1,5 +1,4 @@
 defmodule ApiProductsWeb.ConnCase do
-
   use ExUnit.CaseTemplate
 
   using do

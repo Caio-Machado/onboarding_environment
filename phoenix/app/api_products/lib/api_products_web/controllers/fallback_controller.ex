@@ -10,11 +10,11 @@ defmodule ApiProductsWeb.FallbackController do
     |> render("error.json", changeset: changeset)
   end
 
-  def call(conn, {:error, :bad_request, menssage}) do
+  def call(conn, {:error, :bad_request, message}) do
     conn
     |> put_status(400)
     |> put_view(ApiProductsWeb.ErrorView)
-    |> render(:"400", menssage: menssage)
+    |> render(:"400", message: message)
     |> halt()
   end
 

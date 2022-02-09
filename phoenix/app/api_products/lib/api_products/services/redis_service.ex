@@ -6,9 +6,7 @@ defmodule ApiProducts.RedisService do
   def get_product(id) do
     case Redix.command(:redis_server, ["GET", "product:#{id}"]) do
       {:ok, nil} -> {:ok, nil}
-
       {:ok, result} -> {:ok, decode(result)}
-
       error -> error
     end
   end
@@ -16,9 +14,12 @@ defmodule ApiProducts.RedisService do
   def delete_product(id) do
     case get_product(id) do
       {:ok, _} -> Redix.command(:redis_server, ["DEL", "product:#{id}"])
-
       error -> error
     end
+  end
+
+  def delete_all() do
+    Redix.command(:redis_server, ["FLUSHDB"])
   end
 
   defp encode(product), do: product |> :erlang.term_to_binary() |> Base.encode16()
