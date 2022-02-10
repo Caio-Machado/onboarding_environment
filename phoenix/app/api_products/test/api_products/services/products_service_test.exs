@@ -77,11 +77,6 @@ defmodule ApiProducts.ProductsServiceTest do
                  ProductsService.list(%{"amount" => "invalid"})
       end
     end
-
-    test "Without index" do
-      ElasticService.delete_all()
-      assert {:error, :internal_server_error} == ElasticService.filter_search(%{"amount" => 5})
-    end
   end
 
   describe "create/1" do

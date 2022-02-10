@@ -37,7 +37,7 @@ defmodule ApiProducts.ElasticServiceTest do
     end
 
     test "With invalid id" do
-      {:error, 404, %{}} = ElasticService.get_product("00aaaa0000000a000000aa00")
+      assert {:error, 404, %{}} = ElasticService.get_product("00aaaa0000000a000000aa00")
     end
   end
 
@@ -58,7 +58,7 @@ defmodule ApiProducts.ElasticServiceTest do
     end
 
     test "With valid parameters", %{valid_filters: valid_filters} do
-      ElasticService.filter_search(valid_filters)
+      assert ElasticService.filter_search(valid_filters)
     end
   end
 end
