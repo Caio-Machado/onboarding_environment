@@ -20,11 +20,11 @@ defmodule ApiProducts.RedisServiceTest do
   end
 
   describe "get_product/1" do
-    test "Stores a product in the redis" do
+    test "With invalid id" do
       assert {:ok, nil} == RedisService.get_product("idinvalido")
     end
 
-    test "Stores a product in the redi", %{product: product} do
+    test "With valid id", %{product: product} do
       assert {:ok, product} == RedisService.get_product(product.id)
     end
   end

@@ -61,9 +61,9 @@ defmodule ApiProducts.ProductsServiceTest do
 
     test "with filters", %{product: product, list_valid: list_valid} do
       with_mock(ElasticService, [],
-        filter_search: fn %{"name" => "Nome-teste"} -> {:ok, product} end
+        filter_search: fn %{"name" => "Nome-teste"} -> {:ok, [product]} end
       ) do
-        assert {:ok, product} == ProductsService.list(list_valid)
+        assert {:ok, [product]} == ProductsService.list(list_valid)
       end
     end
 
