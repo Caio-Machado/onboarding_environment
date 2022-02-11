@@ -2,11 +2,19 @@ defmodule ApiProducts.ElasticService do
   import Tirexs.HTTP
 
   def add_product(product) do
-    put("products/product/#{product.id}", format_json(product))
+    put("#{link_with_index()}#{product.id}", format_json(product))
+  end
+
+  def get_product(product_id) do
+    get("#{link_with_index()}#{product_id}")
   end
 
   def delete_product(product_id) do
-    delete("products/product/#{product_id}")
+    delete("#{link_with_index()}#{product_id}")
+  end
+
+  def delete_all() do
+    delete("#{link()}")
   end
 
   def filter_search(%{} = params) when params == %{}, do: {:ok, nil}
@@ -14,13 +22,13 @@ defmodule ApiProducts.ElasticService do
   def filter_search(%{} = params) do
     params
     |> verify_params()
-    |> Enum.map_join("%20AND%20", fn({k, v}) -> "#{k}:#{v}" end)
+    |> Enum.map_join("%20AND%20", fn {k, v} -> "#{k}:#{v}" end)
     |> join_param()
     |> get()
     |> verify_result()
   end
 
-  defp join_param(string_params), do: "products/product/_search?q=#{string_params}"
+  defp join_param(string_params), do: "#{link_with_index()}_search?q=#{string_params}"
 
   defp verify_params(params) do
     params
@@ -44,12 +52,15 @@ defmodule ApiProducts.ElasticService do
 
   defp verify_result({:ok, 200, result}), do: format_result(result[:hits][:hits])
 
-  defp verify_result(:error), do: {:error, :internal_server_error}
+  defp verify_result({:error, 400, error}) do
+    cause = List.first(error.error.root_cause)
+    {:error, :bad_request, cause.reason}
+  end
 
-  defp verify_result(result), do: result
+  defp verify_result(_result), do: {:error, :internal_server_error}
 
   defp format_result(result) do
-    {:ok, Enum.map(result, fn(p) -> Map.delete(p[:_source], :last_update) end)}
+    {:ok, Enum.map(result, fn p -> Map.delete(p[:_source], :last_update) end)}
   end
 
   defp format_json(product) do
@@ -60,7 +71,16 @@ defmodule ApiProducts.ElasticService do
       description: product.description,
       amount: product.amount,
       price: product.price,
+      barcode: product.barcode,
       last_update: DateTime.to_iso8601(DateTime.utc_now())
     }
+  end
+
+  defp link_with_index() do
+    "#{link()}#{Application.get_env(:api_products, :elsc_prod)[:index]}"
+  end
+
+  defp link() do
+    Application.get_env(:api_products, :elsc_prod)[:link]
   end
 end

@@ -36,7 +36,8 @@ defmodule ApiProducts.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:mongodb_ecto, github: "michalmuskala/mongodb_ecto"},
       {:redix, "~> 1.1"},
-      {:tirexs, "~> 0.8"}
+      {:tirexs, "~> 0.8"},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 
@@ -45,7 +46,7 @@ defmodule ApiProducts.MixProject do
       setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      test: ["ecto.create --quiet", "test"]
     ]
   end
 end

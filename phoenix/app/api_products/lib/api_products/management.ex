@@ -25,4 +25,8 @@ defmodule ApiProducts.Management do
   def delete_product(%Products{} = product) do
     Repo.delete(product)
   end
+
+  def delete_all() do
+    Repo.delete_all(Products)
+  end
 end

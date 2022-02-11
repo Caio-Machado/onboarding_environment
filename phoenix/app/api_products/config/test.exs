@@ -1,12 +1,16 @@
 use Mix.Config
 
 config :api_products, ApiProducts.Repo,
-  database: "myapp_development#{System.get_env("MIX_TEST_PARTITION")}",
-  hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  database: "myapp_development_test",
+  hostname: "localhost"
 
 config :api_products, ApiProductsWeb.Endpoint,
   http: [port: 4002],
   server: false
 
 config :logger, level: :warn
+config :api_products, redis_server: 1
+config :api_products, :elsc_prod, link: "testproducts/"
+config :api_products, :elsc_prod, index: "product/"
+config :api_products, :elsc_logs, link: "testlogs/"
+config :api_products, :elsc_logs, index: "requests/"
