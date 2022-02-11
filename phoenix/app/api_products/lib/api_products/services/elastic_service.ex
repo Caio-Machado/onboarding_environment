@@ -2,19 +2,19 @@ defmodule ApiProducts.ElasticService do
   import Tirexs.HTTP
 
   def add_product(product) do
-    put("#{get_link()}#{get_index()}#{product.id}", format_json(product))
+    put("#{link_with_index()}#{product.id}", format_json(product))
   end
 
   def get_product(product_id) do
-    get("#{get_link()}#{get_index()}#{product_id}")
+    get("#{link_with_index()}#{product_id}")
   end
 
   def delete_product(product_id) do
-    delete("#{get_link()}#{get_index()}#{product_id}")
+    delete("#{link_with_index()}#{product_id}")
   end
 
   def delete_all() do
-    delete("#{get_link()}")
+    delete("#{link()}")
   end
 
   def filter_search(%{} = params) when params == %{}, do: {:ok, nil}
@@ -28,7 +28,7 @@ defmodule ApiProducts.ElasticService do
     |> verify_result()
   end
 
-  defp join_param(string_params), do: "#{get_link()}#{get_index()}_search?q=#{string_params}"
+  defp join_param(string_params), do: "#{link_with_index()}_search?q=#{string_params}"
 
   defp verify_params(params) do
     params
@@ -76,11 +76,11 @@ defmodule ApiProducts.ElasticService do
     }
   end
 
-  defp get_link() do
-    Application.get_env(:api_products, :elsc_prod)[:link]
+  defp link_with_index() do
+    "#{link()}#{Application.get_env(:api_products, :elsc_prod)[:index]}"
   end
 
-  defp get_index() do
-    Application.get_env(:api_products, :elsc_prod)[:index]
+  defp link() do
+    Application.get_env(:api_products, :elsc_prod)[:link]
   end
 end

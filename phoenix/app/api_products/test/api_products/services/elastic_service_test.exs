@@ -57,8 +57,12 @@ defmodule ApiProducts.ElasticServiceTest do
       assert {:ok, nil} == ElasticService.filter_search(%{})
     end
 
-    test "With valid parameters", %{valid_filters: valid_filters} do
-      assert ElasticService.filter_search(valid_filters)
+    test "With valid parameters", %{valid_filters: valid_filters, product: product} do
+      # Elastic search has a delay between indexing and being available for search.
+      :timer.sleep(1000)
+
+      assert ElasticService.filter_search(valid_filters) ==
+               {:ok, [Map.delete(product, :last_update)]}
     end
   end
 end
