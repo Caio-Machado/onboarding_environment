@@ -17,7 +17,7 @@ defmodule ApiProducts.MixProject do
   def application do
     [
       mod: {ApiProducts.Application, []},
-      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :tirexs]
+      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :tirexs, :task_bunny]
     ]
   end
 
@@ -37,7 +37,9 @@ defmodule ApiProducts.MixProject do
       {:mongodb_ecto, github: "michalmuskala/mongodb_ecto"},
       {:redix, "~> 1.1"},
       {:tirexs, "~> 0.8"},
-      {:mock, "~> 0.3.0", only: :test}
+      {:mock, "~> 0.3.0", only: :test},
+      {:task_bunny, "~> 0.3.1"},
+      {:csv, "~> 2.4.1"}
     ]
   end
 

@@ -7,7 +7,10 @@ defmodule ApiProducts.ProductsService do
 
   def list(params) do
     with {:ok, nil} <- ElasticService.filter_search(params) do
-      {:ok, Management.list_products()}
+      result = Management.list_products()
+      |> Enum.map(fn p -> Map.delete(p, :__meta__) end)
+      |> Enum.map(fn p -> Map.delete(p, :__struct__) end)
+      {:ok, result}
     end
   end
 

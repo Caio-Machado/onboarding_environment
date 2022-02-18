@@ -9,6 +9,8 @@ defmodule ApiProductsWeb.Router do
     pipe_through(:api)
 
     resources("/products", ProductsController, except: [:new, :edit])
+    get "/report", ReportController, :get_report
+    post "/report", ReportController, :update_report
   end
 
   if Mix.env() in [:dev, :test] do
