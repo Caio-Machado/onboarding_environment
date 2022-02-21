@@ -51,15 +51,25 @@ defmodule ApiProducts.ProductsServiceTest do
         barcode: "030105092"
       })
 
-    [product: product]
+    result = %{
+      id: product.id,
+      sku: product.sku,
+      name: product.name,
+      price: product.price,
+      amount: product.amount,
+      barcode: product.barcode,
+      description: product.description
+    }
+
+    [product: product, get_product: result]
   end
 
   describe "list/1" do
-    test "With valid parameters and without filters", %{product: product} do
+    test "With valid parameters and without filters", %{get_product: product} do
       assert {:ok, [product]} == ProductsService.list(%{})
     end
 
-    test "with filters", %{product: product, list_valid: list_valid} do
+    test "with filters", %{get_product: product, list_valid: list_valid} do
       with_mock(ElasticService, [],
         filter_search: fn %{"name" => "Nome-teste"} -> {:ok, [product]} end
       ) do

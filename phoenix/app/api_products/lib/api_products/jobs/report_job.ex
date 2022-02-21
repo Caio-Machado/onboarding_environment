@@ -1,4 +1,4 @@
-defmodule ApiProductsWeb.ReportJob do
+defmodule ApiProducts.ReportJob do
   alias ApiProducts.ReportService
   alias ApiProducts.ProductsService
 
