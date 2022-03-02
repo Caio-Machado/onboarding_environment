@@ -9,7 +9,7 @@ defmodule ApiProducts.ReportJobTest do
   alias ApiProducts.ProductsService
 
   setup_all do
-    {:ok, expected_report} = File.read(ReportService.get_path())
+    {:ok, expected_report} = File.read(ReportService.get_path_base())
 
     [expected_report: expected_report]
   end
