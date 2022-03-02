@@ -6,10 +6,10 @@ defmodule ApiProductsWeb.ReportControllerTest do
 
   alias ApiProducts.Management
   alias ApiProducts.ReportJob
+  alias ApiProducts.ReportService
 
   setup_all do
-    expected_report =
-      "amount,barcode,description,id,name,price,sku\r\n50,123456789,Description,6216692d77161b03291e1f4c,Name,10.0,Sku\r\n"
+    {:ok, expected_report} = File.read(ReportService.get_path())
 
     [expected_report: expected_report]
   end

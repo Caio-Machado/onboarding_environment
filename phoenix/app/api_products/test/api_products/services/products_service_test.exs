@@ -47,7 +47,7 @@ defmodule ApiProducts.ProductsServiceTest do
       list_valid: list_valid,
       create_params: create_params,
       invalid_attrs: invalid_attrs,
-      get_product: expected_product
+      expected_product: expected_product
     ]
   end
 
@@ -67,11 +67,11 @@ defmodule ApiProducts.ProductsServiceTest do
   end
 
   describe "list/1" do
-    test "With valid parameters and without filters", %{get_product: product} do
+    test "With valid parameters and without filters", %{expected_product: product} do
       assert {:ok, [product]} == ProductsService.list(%{})
     end
 
-    test "with filters", %{get_product: product, list_valid: list_valid} do
+    test "with filters", %{expected_product: product, list_valid: list_valid} do
       with_mock(ElasticService, [],
         filter_search: fn %{"name" => "Nome-teste"} -> {:ok, [product]} end
       ) do
