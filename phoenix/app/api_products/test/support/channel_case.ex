@@ -9,8 +9,4 @@ defmodule ApiProductsWeb.ChannelCase do
       @endpoint ApiProductsWeb.Endpoint
     end
   end
-
-  setup tags do
-    :ok
-  end
 end

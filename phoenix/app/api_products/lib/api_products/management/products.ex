@@ -14,7 +14,7 @@ defmodule ApiProducts.Management.Products do
 
   def changeset(product, attrs) do
     product
-    |> cast(attrs, [:sku, :name, :description, :amount, :price, :barcode])
+    |> cast(attrs, [:sku, :name, :description, :amount, :price, :barcode, :id])
     |> validate_required([:sku, :name, :description, :amount, :price, :barcode])
     |> validate_format(:sku, ~r/^([a-zA-Z0-9]|-)+$/)
     |> validate_number(:price, greater_than: 0)

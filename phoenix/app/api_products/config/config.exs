@@ -15,8 +15,8 @@ config :task_bunny,
 
 config :task_bunny,
   queue: [
-    namespace: "task_bunny.",
-    queues: [[name: "normal", jobs: :default]]
+    namespace: "task_bunny",
+    queues: [[name: "reports", jobs: :default]]
   ]
 
 config :api_products, ApiProductsWeb.Endpoint,

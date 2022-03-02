@@ -9,10 +9,9 @@ defmodule ApiProductsWeb.ReportController do
   end
 
   def update_report(conn, _) do
-    case ReportJob.enqueue(%{"report" => "report"}) do
-      :ok -> send_resp(conn, 204, "")
-
-      error -> send_resp(conn, 500, "")
+    case ReportJob.enqueue(%{"type" => "products"}) do
+      :ok -> send_resp(conn, 202, "")
+      _error -> send_resp(conn, 500, "")
     end
   end
 end
