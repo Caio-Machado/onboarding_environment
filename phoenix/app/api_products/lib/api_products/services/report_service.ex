@@ -1,4 +1,6 @@
 defmodule ApiProducts.ReportService do
+  def generate_csv(nil), do: []
+
   def generate_csv(content) do
     content
     |> CSV.Encoding.Encoder.encode(headers: true)
