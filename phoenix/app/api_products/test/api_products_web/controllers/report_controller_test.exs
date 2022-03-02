@@ -2,40 +2,49 @@ defmodule ApiProductsWeb.ReportControllerTest do
   use ApiProducts.DataCase
   use ApiProductsWeb.ConnCase
 
+  import Mock
+
   alias ApiProducts.Management
-  alias ApiProducts.ReportService
+  alias ApiProducts.ReportJob
 
   setup_all do
-    new_product = %{
+    expected_report =
+      "amount,barcode,description,id,name,price,sku\r\n50,123456789,Description,6216692d77161b03291e1f4c,Name,10.0,Sku\r\n"
+
+    [expected_report: expected_report]
+  end
+
+  setup do
+    Management.create_product(%{
+      "id" => "6216692d77161b03291e1f4c",
       "sku" => "Sku",
       "name" => "Name",
       "description" => "Description",
       "amount" => 50,
       "price" => 10,
       "barcode" => "123456789"
-    }
+    })
 
-    [new_product: new_product]
+    ReportJob.perform(%{"type" => "products"})
+
+    :ok
   end
 
   describe "update_report/2" do
-    test "update the CSV file", %{conn: conn, new_product: new_product} do
-      Management.create_product(new_product)
-      conn = get(conn, Routes.report_path(conn, :update_report))
-      {:ok, result} = File.read(ReportService.get_path())
-      Management.delete_all()
+    test "enqueues the report", %{conn: conn} do
+      with_mock(ReportJob, [], enqueue: fn %{"type" => "products"} -> :ok end) do
+        post(conn, Routes.report_path(conn, :update_report))
 
-      assert result == conn.resp_body
+        assert_called(ReportJob.enqueue(%{"type" => "products"}))
+      end
     end
   end
 
   describe "get_report/2" do
-    test "return the CSV file for download", %{conn: conn, new_product: new_product} do
-      Management.create_product(new_product)
+    test "return the CSV file for download", %{conn: conn, expected_report: expected_report} do
       conn = get(conn, Routes.report_path(conn, :update_report))
-      {:ok, result} = File.read(ReportService.get_path())
 
-      assert result == conn.resp_body
+      assert conn.resp_body == expected_report
     end
   end
 end
