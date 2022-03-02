@@ -32,17 +32,29 @@ defmodule ApiProducts.ProductsServiceTest do
       "barcode" => "005"
     }
 
+    expected_product = %{
+      id: "6216692d77161b03291e1f4c",
+      sku: "valid",
+      name: "Nome-teste",
+      description: "Descrição Teste",
+      amount: 100,
+      price: 99.5,
+      barcode: "030105092"
+    }
+
     [
       new_valid_params: new_valid_params,
       list_valid: list_valid,
       create_params: create_params,
-      invalid_attrs: invalid_attrs
+      invalid_attrs: invalid_attrs,
+      get_product: expected_product
     ]
   end
 
   setup do
     {:ok, product} =
       Management.create_product(%{
+        id: "6216692d77161b03291e1f4c",
         sku: "valid",
         name: "Nome-teste",
         description: "Descrição Teste",
@@ -51,17 +63,7 @@ defmodule ApiProducts.ProductsServiceTest do
         barcode: "030105092"
       })
 
-    result = %{
-      id: product.id,
-      sku: product.sku,
-      name: product.name,
-      price: product.price,
-      amount: product.amount,
-      barcode: product.barcode,
-      description: product.description
-    }
-
-    [product: product, get_product: result]
+    [product: product]
   end
 
   describe "list/1" do
