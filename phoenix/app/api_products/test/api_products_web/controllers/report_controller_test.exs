@@ -9,7 +9,7 @@ defmodule ApiProductsWeb.ReportControllerTest do
   alias ApiProducts.Fixtures
 
   setup_all do
-    {:ok, expected_report} = Fixtures.get_fixture(:expected_report)
+    expected_report = Fixtures.get_fixture(:expected_report)
 
     [expected_report: expected_report]
   end

@@ -10,7 +10,7 @@ defmodule ApiProducts.ReportJobTest do
   alias ApiProducts.ProductsService
 
   setup_all do
-    {:ok, expected_report} = Fixtures.get_fixture(:expected_report)
+    expected_report = Fixtures.get_fixture(:expected_report)
 
     [expected_report: expected_report]
   end
