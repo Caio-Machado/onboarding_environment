@@ -13,11 +13,9 @@ defmodule ApiProducts.DataCase do
   end
 
   setup tags do
-    on_exit(fn ->
-      ApiProducts.Repo.delete_all(ApiProducts.Management.Products)
-      ApiProducts.ElasticService.delete_all()
-      ApiProducts.RedisService.delete_all()
-    end)
+    Mongo.Ecto.truncate(ApiProducts.Repo)
+    ApiProducts.ElasticService.delete_all()
+    ApiProducts.RedisService.delete_all()
 
     :ok
   end

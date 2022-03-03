@@ -8,6 +8,17 @@ config :api_products, Repo,
   database: "myapp_development",
   hostname: "localhost"
 
+config :task_bunny,
+  hosts: [
+    default: [connect_options: "amqp://localhost?heartbeat=30"]
+  ]
+
+config :task_bunny,
+  queue: [
+    namespace: "task_bunny",
+    queues: [[name: "reports", jobs: :default]]
+  ]
+
 config :api_products, ApiProductsWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "+eH8hZnVIVGAac748xrqa1AkfBrgVdpDzPCFy3loo9hS1vTEmO7VVFiDsdVJKkyg",

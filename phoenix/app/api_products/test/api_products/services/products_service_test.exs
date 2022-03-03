@@ -32,17 +32,29 @@ defmodule ApiProducts.ProductsServiceTest do
       "barcode" => "005"
     }
 
+    expected_product = %{
+      id: "6216692d77161b03291e1f4c",
+      sku: "valid",
+      name: "Nome-teste",
+      description: "Descrição Teste",
+      amount: 100,
+      price: 99.5,
+      barcode: "030105092"
+    }
+
     [
       new_valid_params: new_valid_params,
       list_valid: list_valid,
       create_params: create_params,
-      invalid_attrs: invalid_attrs
+      invalid_attrs: invalid_attrs,
+      expected_product: expected_product
     ]
   end
 
   setup do
     {:ok, product} =
       Management.create_product(%{
+        id: "6216692d77161b03291e1f4c",
         sku: "valid",
         name: "Nome-teste",
         description: "Descrição Teste",
@@ -55,11 +67,11 @@ defmodule ApiProducts.ProductsServiceTest do
   end
 
   describe "list/1" do
-    test "With valid parameters and without filters", %{product: product} do
+    test "With valid parameters and without filters", %{expected_product: product} do
       assert {:ok, [product]} == ProductsService.list(%{})
     end
 
-    test "with filters", %{product: product, list_valid: list_valid} do
+    test "with filters", %{expected_product: product, list_valid: list_valid} do
       with_mock(ElasticService, [],
         filter_search: fn %{"name" => "Nome-teste"} -> {:ok, [product]} end
       ) do
