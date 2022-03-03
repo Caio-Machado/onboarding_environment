@@ -6,10 +6,10 @@ defmodule ApiProductsWeb.ReportControllerTest do
 
   alias ApiProducts.Management
   alias ApiProducts.ReportJob
-  alias ApiProducts.ReportService
+  alias Test.ApiProducts.ProductsReport
 
   setup_all do
-    {:ok, expected_report} = File.read(ReportService.get_path_base())
+    {:ok, expected_report} = ProductsReport.get_fixture(:expected_report)
 
     [expected_report: expected_report]
   end
