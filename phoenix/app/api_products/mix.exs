@@ -17,7 +17,7 @@ defmodule ApiProducts.MixProject do
   def application do
     [
       mod: {ApiProducts.Application, []},
-      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :tirexs, :task_bunny]
+      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :tirexs, :task_bunny, :httpoison]
     ]
   end
 
@@ -40,7 +40,8 @@ defmodule ApiProducts.MixProject do
       {:tirexs, "~> 0.8"},
       {:mock, "~> 0.3.0", only: :test},
       {:task_bunny, "~> 0.3.1"},
-      {:csv, "~> 2.4.1"}
+      {:csv, "~> 2.4.1"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 

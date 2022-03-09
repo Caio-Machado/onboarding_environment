@@ -30,6 +30,7 @@ services:
       - HEX_HTTP_TIMEOUT=120
     volumes:
       - ./phoenix/app/:/app
+      - shared_data:/tmp
 
   mongo:
     image: dubc/mongodb-4.0
@@ -80,3 +81,23 @@ services:
       - 15672
       - 15692
       - 5672
+
+  bamboo:
+    network_mode: host
+    expose:
+      - 4001
+    build:
+      context: ./bamboo
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    environment:
+      - TYPE=WEB
+      - PORT=1025
+      - HEX_HTTP_CONCURRENCY=1
+      - HEX_HTTP_TIMEOUT=120
+    volumes:
+      - ./bamboo/app/:/app
+      - shared_data:/tmp
+volumes:
+    shared_data:
