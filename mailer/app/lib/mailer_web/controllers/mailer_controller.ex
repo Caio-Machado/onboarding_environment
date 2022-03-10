@@ -5,7 +5,9 @@ defmodule MailerWeb.MailerController do
   alias MailerWeb.MailerService
 
   def send(conn, _) do
-    Mailer.deliver_later(MailerService.create_email())
-    send_resp(conn, 202, "")
+    case Mailer.deliver_later(MailerService.create_email()) do
+      {:ok, %Bamboo.Email{}} -> send_resp(conn, 202, "")
+      {:error, _} -> send_resp(conn, 500, "")
+    end
   end
 end

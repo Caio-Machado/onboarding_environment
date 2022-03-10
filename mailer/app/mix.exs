@@ -33,7 +33,9 @@ defmodule Mailer.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:bamboo, "~> 2.2.0"},
-      {:bamboo_smtp, "~> 4.1.0"}
+      {:bamboo_smtp, "~> 4.1.0"},
+      {:mock, "~> 0.3.0", only: :test},
+      {:httpoison, "~> 1.8", only: :test}
     ]
   end
 
