@@ -1,5 +1,6 @@
 defmodule MailerWeb.MailerControllerTest do
   use MailerWeb.ConnCase
+  use Bamboo.Test
 
   import Mock
 
@@ -9,10 +10,8 @@ defmodule MailerWeb.MailerControllerTest do
 
   describe "send/2" do
     test "with the email sent", %{conn: conn} do
-      with_mock(Mailer, [], deliver_later: fn(_) -> {:ok, %Bamboo.Email{}} end) do
-        conn = get(conn, Routes.mailer_path(conn, :send))
-        # assert
-      end
+      conn = get(conn, Routes.mailer_path(conn, :send))
+      # assert
     end
   end
 end
