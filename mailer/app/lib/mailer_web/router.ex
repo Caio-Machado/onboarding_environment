@@ -8,6 +8,6 @@ defmodule MailerWeb.Router do
   scope "/", MailerWeb do
     pipe_through(:api)
 
-    get "/mailer", MailerController, :send
+    post "/mailer", MailerController, :send
   end
 end

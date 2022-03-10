@@ -10,7 +10,7 @@ defmodule MailerWeb.MailerControllerTest do
 
   describe "send/2" do
     test "with the email sent", %{conn: conn} do
-      conn = get(conn, Routes.mailer_path(conn, :send))
+      conn = post(conn, Routes.mailer_path(conn, :send))
       # assert
     end
   end
