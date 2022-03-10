@@ -85,9 +85,9 @@ services:
   bamboo:
     network_mode: host
     expose:
-      - 4001
+      - 2525
     build:
-      context: ./bamboo
+      context: ./mailer
       dockerfile: Dockerfile
     tty: true
     stdin_open: true
@@ -97,7 +97,7 @@ services:
       - HEX_HTTP_CONCURRENCY=1
       - HEX_HTTP_TIMEOUT=120
     volumes:
-      - ./bamboo/app/:/app
+      - ./mailer/app/:/app
       - shared_data:/tmp
 volumes:
     shared_data:
