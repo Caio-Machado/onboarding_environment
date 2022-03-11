@@ -23,5 +23,3 @@ WORKDIR /app
 EXPOSE 4001
 
 CMD ["tail", "-f", "/dev/null"]
-
-CMD ["mix", "phx.server"]
