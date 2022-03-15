@@ -11,19 +11,7 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-config :mailer, Mailer.Mailer,
-  adapter: Bamboo.SMTPAdapter,
-  server: "smtp.mailtrap.io",
-  hostname: "smtp.mailtrap.io",
-  port: 2525,
-  username: "9d275b5f7f8128",
-  password: "32436c1e4f39d6",
-  tls: :always,
-  allowed_tls_versions: [:"tlsv1", :"tlsv1.1", :"tlsv1.2"],
-  ssl: false,
-  retries: 1,
-  no_mx_lookups: false,
-  auth: :if_available
+config :mailer, Mailer.Mailer, adapter: Bamboo.LocalAdapter
 
 config :phoenix, :json_library, Jason
 

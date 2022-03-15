@@ -5,8 +5,9 @@ defmodule MailerWeb.MailerController do
   alias MailerWeb.MailerService
 
   def send(conn, _) do
-    case Mailer.deliver_later(MailerService.create_email()) do
+    case MailerService.send_email(MailerService.create_email()) do
       {:ok, %Bamboo.Email{}} -> send_resp(conn, 202, "")
+      {:error, "File report.csv not found" = reason} -> send_resp(conn, 500, reason)
       {:error, _} -> send_resp(conn, 500, "")
     end
   end

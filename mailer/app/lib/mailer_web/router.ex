@@ -1,5 +1,5 @@
 defmodule MailerWeb.Router do
-  use MailerWeb, :router
+  use Phoenix.Router
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -9,5 +9,9 @@ defmodule MailerWeb.Router do
     pipe_through(:api)
 
     post "/mailer", MailerController, :send
+  end
+
+  if Mix.env() == :dev do
+    forward "/sent_emails", Bamboo.SentEmailViewerPlug
   end
 end
