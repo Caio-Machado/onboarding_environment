@@ -82,10 +82,10 @@ services:
       - 15692
       - 5672
 
-  bamboo:
+  mailer:
     network_mode: host
     expose:
-      - 2525
+      - 4001
     build:
       context: ./mailer
       dockerfile: Dockerfile
