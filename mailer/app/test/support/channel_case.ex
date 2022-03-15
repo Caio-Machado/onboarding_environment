@@ -1,5 +1,4 @@
 defmodule MailerWeb.ChannelCase do
-
   use ExUnit.CaseTemplate
 
   using do

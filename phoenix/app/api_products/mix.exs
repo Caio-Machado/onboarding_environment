@@ -17,7 +17,14 @@ defmodule ApiProducts.MixProject do
   def application do
     [
       mod: {ApiProducts.Application, []},
-      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :tirexs, :task_bunny, :httpoison]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :mongodb_ecto,
+        :tirexs,
+        :task_bunny,
+        :httpoison
+      ]
     ]
   end
 
