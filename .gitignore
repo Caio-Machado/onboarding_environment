@@ -1,2 +1,3 @@
 data
 .elixir_ls
+phoenix/app/api_products/lib/api_products/files/report.csv
