@@ -1,6 +1,5 @@
 defmodule ApiProductsWeb.ReportController do
   use ApiProductsWeb, :controller
-  use HTTPoison.Base
 
   alias ApiProducts.ReportService
   alias ApiProducts.ReportJob
@@ -11,12 +10,8 @@ defmodule ApiProductsWeb.ReportController do
 
   def update_report(conn, _) do
     case ReportJob.enqueue(%{"type" => "products"}) do
-      :ok ->
-        HTTPoison.post("localhost:4001/mailer", "")
-        send_resp(conn, 202, "")
-
-      _error ->
-        send_resp(conn, 500, "")
+      :ok -> send_resp(conn, 202, "")
+      _error -> send_resp(conn, 500, "")
     end
   end
 end
