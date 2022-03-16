@@ -4,11 +4,14 @@ defmodule ApiProducts.ReportJob do
 
   alias ApiProducts.ReportService
   alias ApiProducts.ProductsService
+  alias ApiProducts.MailerClient
 
   def perform(%{"type" => "products"}) do
     {:ok, products} = ProductsService.list(%{})
     encoded = ReportService.generate_csv(products)
-    HTTPoison.post(Application.get_env(:api_products, :mailer_url), "")
-    File.write(ReportService.get_path(), encoded)
+
+    with :ok <- File.write(ReportService.get_path(), encoded) do
+      MailerClient.send_report()
+    end
   end
 end
