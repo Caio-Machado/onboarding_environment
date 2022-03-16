@@ -1,6 +1,5 @@
 defmodule ApiProducts.ReportJobTest do
   use ApiProducts.DataCase
-  use HTTPoison.Base
 
   import Mock
 

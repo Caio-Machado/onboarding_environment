@@ -8,7 +8,7 @@ defmodule MailerWeb.MailerService do
   def send_email(:file_not_found), do: {:error, "File report.csv not found"}
 
   def create_email() do
-    if File.exists?(Application.get_env(:mailer, :report)[:path]) do
+    if File.exists?(report_path()) do
       new_email()
       |> to("testemail1@email.com")
       |> from("testemail2@email.com")

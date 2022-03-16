@@ -1,6 +1,5 @@
 defmodule ApiProducts.ReportJob do
   use TaskBunny.Job
-  use HTTPoison.Base
 
   alias ApiProducts.ReportService
   alias ApiProducts.ProductsService
