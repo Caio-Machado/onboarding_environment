@@ -93,7 +93,7 @@ services:
     stdin_open: true
     environment:
       - TYPE=WEB
-      - PORT=1025
+      - PORT=4001
       - HEX_HTTP_CONCURRENCY=1
       - HEX_HTTP_TIMEOUT=120
     volumes:
