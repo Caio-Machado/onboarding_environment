@@ -9,6 +9,7 @@ defmodule ApiProducts.ReportJobTest do
   alias ApiProducts.Fixtures
   alias ApiProducts.ReportService
   alias ApiProducts.ProductsService
+  alias ApiProducts.MailerClient
 
   setup_all do
     expected_report = Fixtures.get_fixture(:expected_report)
@@ -32,25 +33,25 @@ defmodule ApiProducts.ReportJobTest do
   end
 
   describe "perform/1" do
-    test "with a product stored", %{expected_report: expected_report, mailer_url: mailer_url} do
-      with_mock(HTTPoison, [], post: fn _mailer_url, "" -> {:ok, %HTTPoison.Response{}} end) do
+    test "with a product stored", %{expected_report: expected_report} do
+      with_mock(MailerClient, [], send_report: fn -> {:ok, %HTTPoison.Response{}} end) do
         ReportJob.perform(%{"type" => "products"})
         {:ok, content} = File.read(ReportService.get_path())
 
-        assert_called(HTTPoison.post(mailer_url, ""))
+        assert_called(MailerClient.send_report())
         assert expected_report == content
       end
     end
 
-    test "with no product stored", %{mailer_url: mailer_url} do
+    test "with no product stored" do
       with_mocks([
         {ProductsService, [], list: fn %{} -> {:ok, []} end},
-        {HTTPoison, [], post: fn _mailer_url, "" -> {:ok, %HTTPoison.Response{}} end}
+        {MailerClient, [], send_report: fn -> {:ok, %HTTPoison.Response{}} end}
       ]) do
         ReportJob.perform(%{"type" => "products"})
         {:ok, content} = File.read(ReportService.get_path())
 
-        assert_called(HTTPoison.post(mailer_url, ""))
+        assert_called(MailerClient.send_report())
         assert "" == content
       end
     end
