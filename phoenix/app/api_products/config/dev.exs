@@ -21,9 +21,13 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :tirexs, :uri, "http://127.0.0.1:9200"
 
+config :api_products, :mailer_url, "http://127.0.0.1:4001/mailer"
+
 config :api_products, redis_server: 0
+
 config :api_products, :elsc_prod, link: "products/"
 config :api_products, :elsc_prod, index: "product/"
 config :api_products, :elsc_logs, link: "logs/"
 config :api_products, :elsc_logs, index: "requests/"
-config :api_products, :report, path: "/app/api_products/lib/api_products/files/report.csv"
+
+config :api_products, :report, path: "/tmp/report.csv"
