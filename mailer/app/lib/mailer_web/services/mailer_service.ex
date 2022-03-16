@@ -9,14 +9,15 @@ defmodule MailerWeb.MailerService do
 
   def create_email() do
     if File.exists?(Application.get_env(:mailer, :report)[:path]) do
-      email =
-        new_email()
-        |> to("testemail1@email.com")
-        |> from("testemail2@email.com")
-        |> subject("Products report updated")
-        |> put_attachment(Application.get_env(:mailer, :report)[:path])
+      new_email()
+      |> to("testemail1@email.com")
+      |> from("testemail2@email.com")
+      |> subject("Products report updated")
+      |> put_attachment(report_path())
     else
       :file_not_found
     end
   end
+
+  defp report_path(), do: Application.get_env(:mailer, :report)[:path]
 end
