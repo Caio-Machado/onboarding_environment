@@ -8,8 +8,7 @@ defmodule MailerWeb.MailerServiceTest do
     from = "testemail2@email.com"
     to = "testemail1@email.com"
 
-    data =
-      "amount,barcode,description,id,name,price,sku\n50,123456789,Description,6216692d77161b03291e1f4c,Name,10.0,Sku\n"
+    {:ok, data} = File.read(Application.get_env(:mailer, :report)[:path])
 
     [subject: subject, from: from, to: to, data: data]
   end

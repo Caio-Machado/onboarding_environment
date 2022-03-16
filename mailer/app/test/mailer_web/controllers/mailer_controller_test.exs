@@ -15,13 +15,10 @@ defmodule MailerWeb.MailerControllerTest do
     end
 
     test "with file not found", %{conn: conn} do
-      with_mocks([
-        {MailerService, [], create_email: fn -> :file_not_found end},
-        {MailerService, [],
-         send_email: fn :file_not_found -> {:error, "File report.csv not found"} end}
-      ]) do
+      with_mock(MailerService, [:passthrough], create_email: fn -> :file_not_found end) do
         conn = post(build_conn(), Routes.mailer_path(conn, :send))
 
+        assert_no_emails_delivered()
         assert conn.resp_body == "File report.csv not found"
       end
     end
