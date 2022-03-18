@@ -13,6 +13,7 @@ defmodule ApiProducts.Application do
     ]
 
     opts = [strategy: :one_for_one, name: ApiProducts.Supervisor]
+    Logger.add_backend(Sentry.LoggerBackend)
     Supervisor.start_link(children, opts)
   end
 

@@ -1,8 +1,10 @@
 defmodule ApiProductsWeb.Router do
+  use Sentry.PlugCapture
   use ApiProductsWeb, :router
 
   pipeline :api do
     plug(:accepts, ["json"])
+    plug Sentry.PlugContext
   end
 
   scope "/", ApiProductsWeb do
