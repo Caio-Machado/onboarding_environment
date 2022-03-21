@@ -35,14 +35,4 @@ config :phoenix, :json_library, Jason
 config :logger,
   backends: [:console, Sentry.LoggerBackend]
 
-config :sentry,
-  dsn: "https://99c2fa83daf84bbea3f4b30032163dcc@127.0.0.1:9000/1",
-  enable_source_code_context: true,
-  root_source_code_path: File.cwd!(),
-  tags: %{
-    env: Mix.env()
-  },
-  included_environments: [:dev, :prod],
-  environment_name: Mix.env()
-
 import_config "#{Mix.env()}.exs"

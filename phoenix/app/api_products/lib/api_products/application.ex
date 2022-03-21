@@ -2,6 +2,7 @@ defmodule ApiProducts.Application do
   use Application
 
   def start(_type, _args) do
+    Logger.add_backend(Sentry.LoggerBackend)
     children = [
       ApiProducts.Repo,
       ApiProductsWeb.Telemetry,
@@ -13,7 +14,6 @@ defmodule ApiProducts.Application do
     ]
 
     opts = [strategy: :one_for_one, name: ApiProducts.Supervisor]
-    Logger.add_backend(Sentry.LoggerBackend)
     Supervisor.start_link(children, opts)
   end
 

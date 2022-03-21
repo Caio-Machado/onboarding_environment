@@ -2,6 +2,7 @@ defmodule Mailer.Application do
   use Application
 
   def start(_type, _args) do
+    Logger.add_backend(Sentry.LoggerBackend)
     children = [
       MailerWeb.Telemetry,
       {Phoenix.PubSub, name: Mailer.PubSub},
