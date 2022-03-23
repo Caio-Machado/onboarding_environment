@@ -1,6 +1,7 @@
 defmodule ApiProductsWeb.Endpoint do
-  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :api_products
+  use Sentry.PlugCapture
+  use SpandexPhoenix
 
   @session_options [
     store: :cookie,

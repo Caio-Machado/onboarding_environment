@@ -1,6 +1,6 @@
 defmodule MailerWeb.Endpoint do
-  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :mailer
+  use Sentry.PlugCapture
 
   @session_options [
     store: :cookie,

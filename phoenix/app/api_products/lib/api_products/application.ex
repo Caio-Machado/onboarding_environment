@@ -2,8 +2,18 @@ defmodule ApiProducts.Application do
   use Application
 
   def start(_type, _args) do
+    spandex_opts = [
+      host: System.get_env("DATADOG_HOST") || "localhost",
+      port: 8126,
+      batch_size: 10,
+      sync_threshold: 100,
+      http: HTTPoison
+    ]
+
     Logger.add_backend(Sentry.LoggerBackend)
+
     children = [
+      {SpandexDatadog.ApiServer, spandex_opts},
       ApiProducts.Repo,
       ApiProductsWeb.Telemetry,
       {Phoenix.PubSub, name: ApiProducts.PubSub},
