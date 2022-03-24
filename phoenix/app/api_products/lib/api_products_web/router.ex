@@ -1,12 +1,9 @@
 defmodule ApiProductsWeb.Router do
   use ApiProductsWeb, :router
-  use Sentry.PlugCapture
-  # use Spandex.Decorators
-  use SpandexPhoenix
+  use Spandex.Decorators
 
   pipeline :api do
     plug(:accepts, ["json"])
-    plug Sentry.PlugContext
   end
 
   scope "/", ApiProductsWeb do

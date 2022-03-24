@@ -38,15 +38,22 @@ config :logger,
 config :api_products, ApiProducts.Tracer,
   service: :api_products,
   adapter: SpandexDatadog.Adapter,
-  type: :web,
+  disabled?: false,
   env: "dev"
 
-  # config :spandex, :decorators, tracer: ApiProducts.Tracer
-  config :spandex_phoenix, tracer: ApiProducts.Tracer
+config :api_products, SpandexDatadog.ApiServer,
+  host: "http://127.0.0.1",
+  port: 8126,
+  batchsize: 10,
+  sync_trasholder: 100,
+  http: HTTPoison
 
-# config :spandex_ecto, SpandexEcto.EctoLogger,
-#   service: :api_products_ecto,
-#   tracer: PhoenixBackend.Tracer,
-#   otp_app: :api_products
+config :spandex, :decorators, tracer: ApiProducts.Tracer
+config :spandex_phoenix, tracer: ApiProducts.Tracer
+
+config :spandex_ecto, SpandexEcto.EctoLogger,
+  service: :api_products_ecto,
+  tracer: PhoenixBackend.Tracer,
+  otp_app: :api_products
 
 import_config "#{Mix.env()}.exs"

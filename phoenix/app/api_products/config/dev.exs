@@ -35,6 +35,4 @@ config :api_products, :report, path: "/tmp/report.csv"
 config :sentry,
   dsn: "http://98a9c6ef9c5148fcb9ccf4f808e54d1b@127.0.0.1:9000/2",
   environment_name: :dev,
-  enable_source_code_context: true,
-  root_source_code_path: File.cwd!(),
   included_environments: [:dev]
