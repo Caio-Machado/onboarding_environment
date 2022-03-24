@@ -31,3 +31,8 @@ config :api_products, :elsc_logs, link: "logs/"
 config :api_products, :elsc_logs, index: "requests/"
 
 config :api_products, :report, path: "/tmp/report.csv"
+
+config :sentry,
+  dsn: "http://98a9c6ef9c5148fcb9ccf4f808e54d1b@127.0.0.1:9000/2",
+  environment_name: :dev,
+  included_environments: [:dev]

@@ -23,7 +23,8 @@ defmodule ApiProducts.MixProject do
         :mongodb_ecto,
         :tirexs,
         :task_bunny,
-        :httpoison
+        :httpoison,
+        :sentry
       ]
     ]
   end
@@ -48,7 +49,14 @@ defmodule ApiProducts.MixProject do
       {:mock, "~> 0.3.0", only: :test},
       {:task_bunny, "~> 0.3.1"},
       {:csv, "~> 2.4.1"},
-      {:httpoison, "~> 1.8"}
+      {:httpoison, "~> 1.8"},
+      {:hackney, "~> 1.8"},
+      {:sentry, "~> 8.0"},
+      {:spandex, "~> 3.0.3"},
+      {:spandex_phoenix, "~> 0.2"},
+      {:spandex_ecto, "~> 0.2"},
+      {:decorator, "~> 1.2"},
+      {:spandex_datadog, "~> 1.2"}
     ]
   end
 

@@ -9,10 +9,31 @@ config :mailer, MailerWeb.Endpoint,
 
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
+  metadata: [:request_id, :trace_id, :span_id]
 
 config :mailer, Mailer.Mailer, adapter: Bamboo.LocalAdapter
 
 config :phoenix, :json_library, Jason
+
+config :mailer, Mailer.Tracer,
+  service: :mailer,
+  adapter: SpandexDatadog.Adapter,
+  disabled?: false,
+  env: "dev"
+
+config :mailer, SpandexDatadog.ApiServer,
+  host: "http://127.0.0.1",
+  port: 8126,
+  batchsize: 10,
+  sync_trasholder: 100,
+  http: HTTPoison
+
+config :spandex, :decorators, tracer: Mailer.Tracer
+config :spandex_phoenix, tracer: Mailer.Tracer
+
+config :spandex_ecto, SpandexEcto.EctoLogger,
+  service: :mailer_ecto,
+  tracer: PhoenixBackend.Tracer,
+  otp_app: :mailer
 
 import_config "#{Mix.env()}.exs"

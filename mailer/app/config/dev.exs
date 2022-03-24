@@ -8,6 +8,11 @@ config :mailer, MailerWeb.Endpoint,
 
 config :logger, :console, format: "[$level] $message\n"
 
+config :sentry,
+  dsn: "http://98a9c6ef9c5148fcb9ccf4f808e54d1b@127.0.0.1:9000/2",
+  environment_name: :dev,
+  included_environments: [:dev]
+
 config :phoenix, :stacktrace_depth, 20
 
 config :phoenix, :plug_init_mode, :runtime

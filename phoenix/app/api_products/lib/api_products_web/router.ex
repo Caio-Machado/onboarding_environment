@@ -1,5 +1,6 @@
 defmodule ApiProductsWeb.Router do
   use ApiProductsWeb, :router
+  use Spandex.Decorators
 
   pipeline :api do
     plug(:accepts, ["json"])

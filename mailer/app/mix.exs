@@ -34,7 +34,13 @@ defmodule Mailer.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:bamboo, "~> 2.2.0"},
       {:mock, "~> 0.3.0", only: :test},
-      {:httpoison, "~> 1.8", only: :test}
+      {:httpoison, "~> 1.8"},
+      {:sentry, "~> 8.0"},
+      {:spandex, "~> 3.0.3"},
+      {:decorator, "~> 1.2"},
+      {:spandex_phoenix, "~> 1.0.5"},
+      {:spandex_ecto, "~> 0.7"},
+      {:spandex_datadog, "~> 1.2"}
     ]
   end
 
