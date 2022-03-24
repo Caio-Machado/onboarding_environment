@@ -17,7 +17,7 @@ defmodule Mailer.MixProject do
   def application do
     [
       mod: {Mailer.Application, []},
-      extra_applications: [:logger, :runtime_tools, :bamboo, :spandex_datadog]
+      extra_applications: [:logger, :runtime_tools, :bamboo]
     ]
   end
 
@@ -34,7 +34,7 @@ defmodule Mailer.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:bamboo, "~> 2.2.0"},
       {:mock, "~> 0.3.0", only: :test},
-      {:httpoison, "~> 1.8", only: :test},
+      {:httpoison, "~> 1.8"},
       {:sentry, "~> 8.0"},
       {:spandex, "~> 3.0.3"},
       {:decorator, "~> 1.2"},

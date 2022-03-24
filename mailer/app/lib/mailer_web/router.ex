@@ -1,5 +1,6 @@
 defmodule MailerWeb.Router do
   use Phoenix.Router
+  use Spandex.Decorators
 
   pipeline :api do
     plug :accepts, ["json"]

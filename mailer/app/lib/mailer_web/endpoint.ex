@@ -1,6 +1,7 @@
 defmodule MailerWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :mailer
   use Sentry.PlugCapture
+  use SpandexPhoenix
 
   @session_options [
     store: :cookie,
@@ -25,20 +26,15 @@ defmodule MailerWeb.Endpoint do
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
-  plug Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json],
-    pass: ["*/*"],
-    json_decoder: Phoenix.json_library()
-
-  plug Plug.MethodOverride
-  plug Plug.Head
-  plug Plug.Session, @session_options
-  plug MailerWeb.Router
-
   plug(Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
   )
+
   plug Sentry.PlugContext
+  plug Plug.MethodOverride
+  plug Plug.Head
+  plug Plug.Session, @session_options
+  plug MailerWeb.Router
 end
